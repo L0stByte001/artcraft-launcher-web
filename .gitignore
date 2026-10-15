@@ -1,0 +1,37 @@
+# Runtime e file temporanei
+*.log
+*.tmp
+*.bak
+*.pre-test
+*.pre-*
+
+# Archivi generati: saranno pubblicati nelle GitHub Releases
+*.tar.gz
+
+# Dati e credenziali locali
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.crt
+
+# Dati scaricati/installati delle applicazioni
+www/apps/*
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Editor e sistema operativo
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Cache runtime delle release
+data/release-cache/*
+!data/release-cache/.gitkeep
+
+# Stato runtime: mantenere solo il registry iniziale versionato

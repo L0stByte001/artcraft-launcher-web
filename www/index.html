@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>ArtCraft Hub</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #101113;
+  --panel: #17181b;
+  --border: #303136;
+  --muted: #9b9ca3;
+  --accent: #78aaff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #f5f5f6;
+  font: 14px/1.5 system-ui, sans-serif;
+}
+header {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: center; gap: 20px;
+  padding: 16px 24px; background: #151619;
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-weight: 900; letter-spacing: 2px; font-size: 19px; }
+header span { color: var(--muted); font-size: 12px; }
+main { max-width: 1600px; margin: auto; padding: 28px 24px; }
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  align-items: center; justify-content: space-between;
+  margin-bottom: 28px;
+}
+input, select {
+  color: white; background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 5px; padding: 11px 13px;
+}
+input { width: min(100%, 320px); }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter {
+  border: 1px solid var(--border); border-radius: 5px;
+  padding: 8px 12px; color: #ddd; background: transparent;
+  cursor: pointer;
+}
+.filter.active { background: white; color: #111; }
+h2 { font-size: 12px; letter-spacing: 2px; color: var(--muted); }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  gap: 14px;
+}
+.card {
+  display: flex; flex-direction: column; min-height: 230px;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px;
+}
+.cardtop { display: flex; align-items: center; gap: 13px; }
+.app-icon {
+  display: block;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  object-fit: contain;
+  border-radius: 9px;
+}
+h3 { margin: 0; font-size: 18px; }
+.category { color: var(--muted); font-size: 12px; }
+.description { color: #c1c1c5; margin: 16px 0 8px; }
+.version { color: var(--muted); font-size: 12px; margin-top: auto; }
+.actions { display: flex; gap: 8px; margin-top: 16px; }
+.open {
+  display: block; flex: 1; text-align: center; padding: 10px;
+  background: white; color: #111; border-radius: 4px;
+  text-decoration: none; font-weight: 750;
+}
+.source {
+  padding: 9px; border: 1px solid var(--border);
+  border-radius: 4px; color: #ddd; text-decoration: none;
+}
+.open:hover { background: #dbe8ff; }
+footer { color: #777; font-size: 12px; padding: 30px 0; }
+
+.manage {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 9px 10px;
+  color: #eee;
+  background: #222328;
+  cursor: pointer;
+}
+.manage:hover { border-color: var(--accent); }
+.disabled { opacity: .45; pointer-events: none; }
+.update-note { color: #f2c36b; font-size: 12px; margin-top: 8px; }
+.status-ok { color: #91d6ad; font-size: 12px; margin-top: 8px; }
+.version-panel {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.version-panel h4 { margin: 0 0 10px; }
+.release-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 9px 0; border-bottom: 1px solid #292a2f;
+}
+.release-details { min-width: 0; }
+.tag-selected, .tag-installed, .tag-missing {
+  font-size: 11px; white-space: nowrap; padding: 3px 6px;
+  border-radius: 4px; background: #292a2f;
+}
+.tag-selected { color: #a9d5ff; }
+.tag-installed { color: #9fe0b4; }
+.tag-missing { color: #c5c5cc; }
+.panel-note { color: var(--muted); font-size: 12px; }
+
+.empty { color: var(--muted); padding: 24px 0; }
+.open,
+.open:hover,
+.open.primary-update {
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  header { padding: 14px; }
+  main { padding: 20px 14px; }
+  .toolbar { align-items: stretch; }
+  input { width: 100%; }
+}
+
+.sync-status { color: var(--muted); font-size: 12px; margin: -6px 0 12px; }
+.actions { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+.actions .open { flex: 1; min-width: 0; }
+.menu-wrap { position: relative; flex: 0 0 auto; }
+.menu-trigger {
+  width: 40px; height: 40px; display: grid; place-items: center;
+  border: 1px solid var(--border); border-radius: 5px;
+  color: #eee; background: #222328; cursor: pointer; font-size: 21px;
+}
+.menu-trigger:hover, .menu-trigger[aria-expanded="true"] {
+  border-color: var(--accent);
+}
+.app-menu {
+  position: absolute; z-index: 5; right: 0; top: calc(100% + 6px);
+  min-width: 190px; padding: 5px; background: #202126;
+  border: 1px solid var(--border); border-radius: 7px;
+  box-shadow: 0 8px 24px #0008;
+}
+.app-menu[hidden] { display: none; }
+.app-menu button, .app-menu a {
+  display: block; width: 100%; padding: 10px;
+  text-align: left; color: #eee; background: transparent;
+  border: 0; border-radius: 4px; text-decoration: none;
+  font: inherit; cursor: pointer;
+}
+ .app-menu button:hover, .app-menu a:hover { background: #303137; }
+ .primary-update { background: #f2c36b !important; color: #171717 !important; }
+ .action-button {
+   border: 1px solid var(--border); border-radius: 4px;
+   padding: 9px 12px; color: #eee; background: #222328;
+   cursor: pointer; font: inherit;
+ }
+ .action-button:hover { border-color: var(--accent); }
+ .action-button:disabled { opacity: .5; cursor: wait; }
+ .action-danger { color: #ffb4b4; }
+ .action-primary { background: #fff; color: #111; }
+ .action-status { color: var(--muted); font-size: 12px; margin-top: 10px; }
+@media (max-width: 600px) {
+  .card { padding: 14px; }
+  .menu-trigger { width: 42px; height: 42px; }
+}
+
+
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(0,0,0,.72);
+  backdrop-filter: blur(4px);
+}
+.modal-backdrop[hidden] { display: none; }
+.version-modal {
+  width: min(100%, 620px); max-height: min(80vh, 760px);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: #191a1e; border: 1px solid #393a41;
+  border-radius: 12px; box-shadow: 0 24px 80px #0009;
+}
+.modal-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 22px; border-bottom: 1px solid var(--border);
+}
+.modal-heading { flex: 1; min-width: 0; }
+.modal-heading h3 { margin: 0; font-size: 19px; }
+.modal-heading p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+.modal-close {
+  width: 38px; height: 38px; flex: 0 0 auto;
+  border: 1px solid var(--border); border-radius: 7px;
+  background: #25262b; color: #eee; cursor: pointer; font-size: 23px;
+}
+.modal-body { padding: 8px 22px 20px; overflow-y: auto; }
+.modal-body .release-row { padding: 14px 0; }
+.modal-footer {
+  padding: 14px 22px; border-top: 1px solid var(--border);
+  color: var(--muted); font-size: 12px;
+}
+body.modal-open { overflow: hidden; }
+@media (max-width: 600px) {
+  .modal-backdrop { padding: 10px; }
+  .version-modal { max-height: 88vh; }
+  .modal-header, .modal-body { padding-left: 16px; padding-right: 16px; }
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">ARTCRAFT</div>
+  <span>WEB APP SUITE</span>
+</header>
+<main>
+  <div class="toolbar">
+    <div class="filters" id="filters">
+      <button class="filter active" data-category="Tutte">Tutte</button>
+      <button class="filter" data-category="Creatività">Creatività</button>
+      <button class="filter" data-category="Produttività">Produttività</button>
+      <button class="filter" data-category="Tecnica">Tecnica</button>
+      <button class="filter" data-category="Audio e video">Audio e video</button>
+    </div>
+    <input id="search" type="search" placeholder="Cerca applicazioni…"
+           aria-label="Cerca applicazioni">
+  </div>
+
+  <h2 id="count">12 APPLICAZIONI</h2>
+  <p id="sync-status" class="sync-status" role="status" aria-live="polite">Applicazioni disponibili</p>
+  <section class="grid" id="grid"></section>
+
+  <footer>
+    ArtCraft Hub è un launcher web indipendente. Le applicazioni sono
+    distribuite dai rispettivi progetti Storytold. I marchi appartengono
+    ai rispettivi proprietari. Le funzioni disponibili dipendono dalla
+    versione web di ogni applicazione.
+  </footer>
+</main>
+
+<div id="version-modal-backdrop" class="modal-backdrop" hidden>
+  <section class="version-modal" role="dialog" aria-modal="true"
+           aria-labelledby="version-modal-title">
+    <div class="modal-header">
+      <img id="version-modal-icon" class="app-icon" width="46" height="46" alt="">
+      <div class="modal-heading">
+        <h3 id="version-modal-title">Gestisci versioni</h3>
+        <p id="version-modal-subtitle">Versioni disponibili</p>
+      </div>
+      <button id="version-modal-close" class="modal-close"
+              type="button" aria-label="Chiudi">×</button>
+    </div>
+    <div id="version-modal-body" class="modal-body"></div>
+    <div class="modal-footer">
+      Le operazioni di installazione, selezione ed eliminazione modificano i file
+      sul server. Le operazioni distruttive richiedono conferma.
+    </div>
+  </section>
+</div>
+
+<script>
+const apps = [
+  ["photocraft","PhotoCraft","Creatività","Editor di immagini","0.8.2"],
+  ["vectorcraft","VectorCraft","Creatività","Grafica vettoriale","0.10.0"],
+  ["filmcraft","FilmCraft","Audio e video","Montaggio video e colore","0.7.2"],
+  ["lightcraft","LightCraft","Creatività","Sviluppo fotografico RAW","0.7.1"],
+  ["pdfcraft","PdfCraft","Produttività","Lettura e gestione PDF","0.7.1"],
+  ["effectcraft","EffectCraft","Audio e video","Effetti e motion graphics","0.9.2"],
+  ["designcraft","DesignCraft","Creatività","Impaginazione e publishing","0.7.1"],
+  ["wordcraft","WordCraft","Produttività","Documenti e scrittura","0.6.1"],
+  ["deckcraft","DeckCraft","Produttività","Presentazioni","0.6.1"],
+  ["gridcraft","GridCraft","Produttività","Fogli di calcolo e dati","0.6.1"],
+  ["cadcraft","CADCraft","Tecnica","Disegno e progettazione CAD","0.6.2"],
+  ["soundcraft","SoundCraft","Audio e video","Registrazione e mix audio","0.6.1"]
+];
+
+let category = "Tutte";
+let installedData = {};
+let releaseData = {};
+let loading = false;
+
+const grid = document.querySelector("#grid");
+const search = document.querySelector("#search");
+const count = document.querySelector("#count");
+
+function versionCompare(a, b) {
+  const aa = a.split(".").map(Number);
+  const bb = b.split(".").map(Number);
+  for (let i = 0; i < Math.max(aa.length, bb.length); i++) {
+    const diff = (aa[i] || 0) - (bb[i] || 0);
+    if (diff) return diff;
+  }
+  return 0;
+}
+
+async function api(path) {
+  const response = await fetch(path, {
+    credentials: "same-origin",
+    headers: { "Accept": "application/json" },
+    cache: "no-store"
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || `Richiesta fallita: HTTP ${response.status}`);
+  }
+  return data;
+}
+
+async function apiPost(path, payload) {
+  const response = await fetch(path, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload),
+    cache: "no-store"
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || `Richiesta fallita: HTTP ${response.status}`);
+  }
+  return data;
+}
+
+async function runAction(button, message, action) {
+  const status = document.querySelector("#sync-status");
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = "Attendere…";
+  status.textContent = message;
+  try {
+    await action();
+    status.textContent = "Operazione completata.";
+    await refreshData();
+  } catch (error) {
+    status.textContent = `Operazione non riuscita: ${error.message}`;
+    alert(`Operazione non riuscita: ${error.message}`);
+  } finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
+}
+
+async function refreshData() {
+  if (loading) return;
+  loading = true;
+  const status = document.querySelector("#sync-status");
+  status.textContent = "Verifica aggiornamenti in background…";
+
+  try {
+    const data = await api("/api/apps");
+    installedData = data.apps || {};
+    render();
+
+    const results = await Promise.allSettled(
+      apps.map(async app => {
+        const data = await api(
+          `/api/releases?app=${encodeURIComponent(app[0])}`
+        );
+        releaseData[app[0]] = data.releases || [];
+        render();
+      })
+    );
+
+    const failed = results.filter(r => r.status === "rejected").length;
+    status.textContent = failed
+      ? `Catalogo aggiornato parzialmente · ${failed} verifiche non riuscite`
+      : `Catalogo verificato · ${new Date().toLocaleTimeString("it-IT", {hour: "2-digit", minute: "2-digit"})}`;
+  } catch (error) {
+    status.textContent = `Verifica non riuscita: ${error.message}. Le applicazioni restano disponibili.`;
+  } finally {
+    loading = false;
+  }
+}
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function render() {
+  const query = search.value.trim().toLowerCase();
+  const filtered = apps.filter(a =>
+    (category === "Tutte" || a[2] === category) &&
+    a.slice(0, 4).join(" ").toLowerCase().includes(query)
+  );
+
+  count.textContent = `${filtered.length} APPLICAZIONI`;
+  grid.replaceChildren();
+
+  if (!filtered.length) {
+    grid.append(element("p", "empty", "Nessuna applicazione trovata."));
+    return;
+  }
+
+  for (const [slug, name, cat, desc, fallbackVersion] of filtered) {
+    const state = installedData[slug] || {};
+    const installed = state.installed || [];
+    const selected = state.selected || null;
+    const releases = releaseData[slug] || [];
+    const latest = releases.length
+      ? releases.reduce((best, item) =>
+          versionCompare(item.version, best.version) > 0 ? item : best
+        )
+      : null;
+
+    const card = element("article", "card");
+    const top = element("div", "cardtop");
+    const icon = element("img", "app-icon");
+    icon.src = `/icons/${slug}.png`;
+    icon.alt = `${name} icon`;
+    icon.width = 46;
+    icon.height = 46;
+
+    const info = element("div");
+    info.append(element("h3", "", name));
+    info.append(element("div", "category", cat));
+    top.append(icon, info);
+
+    card.append(top);
+    card.append(element("p", "description", desc));
+
+    const versionLabel = selected
+      ? `Selezionata: ${selected}`
+      : "Nessuna versione registrata";
+    card.append(element("div", "version", versionLabel));
+
+    if (latest && !installed.includes(latest.version)) {
+      card.append(element(
+        "div", "update-note",
+        `Nuova versione disponibile: ${latest.version}`
+      ));
+    } else if (!releases.length) {
+      card.append(element("div", "version", "Versioni online non verificate"));
+    } else {
+      card.append(element("div", "status-ok", "Catalogo verificato"));
+    }
+
+    const actions = element("div", "actions");
+
+    // La card apre sempre la versione attualmente selezionata.
+    // Gli aggiornamenti si gestiscono esclusivamente dal menu versioni.
+    if (selected) {
+      const appLink = element("a", "open", "Apri");
+      appLink.href = `/apps/${slug}/current/`;
+      appLink.target = "_blank";
+      appLink.rel = "noopener noreferrer";
+      appLink.setAttribute(
+        "aria-label",
+        `Apri ${name} versione ${selected} in una nuova scheda`
+      );
+      actions.append(appLink);
+    } else {
+      const downloadButton = element("button", "open", "Scarica");
+      downloadButton.type = "button";
+
+      downloadButton.addEventListener("click", async () => {
+        if (!confirm(
+          `Scaricare ${name} (${latest?.version || "ultima versione disponibile"})?`
+        )) return;
+
+        downloadButton.disabled = true;
+        downloadButton.textContent = "Downloading...";
+
+        try {
+          const result = await apiPost("/api/install", {
+            app: slug,
+            version: "latest"
+          });
+
+          await apiPost("/api/select", {
+            app: slug,
+            version: result.version
+          });
+
+          await refreshData();
+        } catch (error) {
+          alert(`Download non riuscito: ${error.message}`);
+          downloadButton.disabled = false;
+          downloadButton.textContent = "Scarica";
+        }
+      });
+
+      actions.append(downloadButton);
+    }
+    const menuWrap = element("div", "menu-wrap");
+    const trigger = element("button", "menu-trigger", "⋮");
+    trigger.type = "button";
+    trigger.setAttribute("aria-label", `Altre azioni per ${name}`);
+    trigger.setAttribute("aria-expanded", "false");
+
+    const menu = element("div", "app-menu");
+    menu.hidden = true;
+
+    const manage = element("button", "", "Gestisci versioni");
+    manage.type = "button";
+    manage.addEventListener("click", () => {
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      showVersions(card, slug, name);
+    });
+
+    const selectedVersion = (installedData[slug] || {}).selected;
+    const installedVersions = (installedData[slug] || {}).installed || [];
+    const latestRelease = (releaseData[slug] || [])[0];
+
+    const showUpdateLatest = Boolean(
+      latestRelease &&
+      selectedVersion &&
+      versionCompare(latestRelease.version, selectedVersion) > 0 &&
+      !installedVersions.includes(latestRelease.version)
+    );
+
+    const updateLatest = element("button", "", "Aggiorna all'ultima versione");
+    updateLatest.type = "button";
+    updateLatest.addEventListener("click", async () => {
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+
+      const latestRelease = (releaseData[slug] || [])[0];
+      if (!latestRelease) {
+        alert(`Nessuna release disponibile per ${name}.`);
+        return;
+      }
+
+      const installedVersions = (installedData[slug] || {}).installed || [];
+      const alreadyInstalled = installedVersions.includes(latestRelease.version);
+
+      const operation = alreadyInstalled ? "attivare" : "scaricare e attivare";
+      if (!confirm(
+        `Vuoi ${operation} ${name} ${latestRelease.version}?`
+      )) return;
+
+      await runAction(
+        updateLatest,
+        `${alreadyInstalled ? "Attivazione" : "Aggiornamento"} di ${name} in corso…`,
+        async () => {
+          if (!alreadyInstalled) {
+            await apiPost("/api/install", {
+              app: slug,
+              version: latestRelease.version
+            });
+          }
+
+          await apiPost("/api/select", {
+            app: slug,
+            version: latestRelease.version
+          });
+        }
+      );
+    });
+
+    const uninstall = element("button", "action-danger", "Disinstalla app");
+    uninstall.type = "button";
+    uninstall.addEventListener("click", async () => {
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      if (!confirm(`Disinstallare ${name} e rimuovere tutte le sue versioni dal server? La scheda resterà nel launcher.`)) return;
+      await runAction(uninstall, `Disinstallazione di ${name} in corso…`, async () => {
+        await apiPost("/api/uninstall", { app: slug });
+      });
+    });
+
+    const source = element("a", "", "Repository GitHub");
+    source.href = `https://github.com/storytold/${slug}/releases`;
+    source.target = "_blank";
+    source.rel = "noopener noreferrer";
+
+    menu.append(manage);
+    if (showUpdateLatest) menu.append(updateLatest);
+    menu.append(uninstall, source);
+    trigger.addEventListener("click", event => {
+      event.stopPropagation();
+      const willOpen = menu.hidden;
+      document.querySelectorAll(".app-menu").forEach(m => m.hidden = true);
+      document.querySelectorAll(".menu-trigger").forEach(b => b.setAttribute("aria-expanded", "false"));
+      menu.hidden = !willOpen;
+      trigger.setAttribute("aria-expanded", String(willOpen));
+    });
+
+    menuWrap.append(trigger, menu);
+    actions.append(menuWrap);
+    card.append(actions);
+    grid.append(card);
+  }
+}
+
+function showVersions(card, slug, name) {
+  const backdrop = document.querySelector("#version-modal-backdrop");
+  const body = document.querySelector("#version-modal-body");
+  const state = installedData[slug] || {};
+  const installed = state.installed || [];
+  const selected = state.selected;
+  const releases = releaseData[slug] || [];
+
+  document.querySelector("#version-modal-title").textContent = name;
+  document.querySelector("#version-modal-subtitle").textContent =
+    `${installed.length} versioni installate · ${releases.length} release online`;
+  const icon = document.querySelector("#version-modal-icon");
+  icon.src = `/icons/${slug}.png`;
+  icon.alt = `${name} icon`;
+
+  body.replaceChildren();
+
+  if (!releases.length) {
+    body.append(element("p", "empty",
+      "Release non disponibili. Il controllo online potrebbe essere fallito."));
+  }
+
+  for (const release of releases) {
+    const row = element("div", "release-row");
+    const details = element("div", "release-details");
+    details.append(element("strong", "", `v${release.version}`));
+
+    const labels = [];
+    if (release.version === selected) labels.push("selezionata");
+    if (installed.includes(release.version) && release.installed) {
+      labels.push("presente sul server");
+    } else {
+      labels.push("non installata");
+    }
+    details.append(element("div", "category", labels.join(" · ")));
+    row.append(details);
+
+    const isInstalled = installed.includes(release.version) && release.installed;
+    if (release.version === selected) {
+      row.append(element("span", "tag-selected", "In uso"));
+    } else if (isInstalled) {
+      row.append(element("span", "tag-installed", "Installata"));
+    } else {
+      row.append(element("span", "tag-missing", "Su GitHub"));
+    }
+
+    const controls = element("div", "actions");
+    if (!isInstalled) {
+      const install = element("button", "action-button", "Installa");
+      install.type = "button";
+      install.addEventListener("click", async () => {
+        if (!confirm(`Scaricare ${name} versione ${release.version}?`)) return;
+        await runAction(install, `Installazione di ${name} ${release.version}…`, async () => {
+          await apiPost("/api/install", { app: slug, version: release.version });
+        });
+        showVersions(card, slug, name);
+      });
+      controls.append(install);
+    } else if (release.version !== selected) {
+      const selectButton = element("button", "action-button", "Attiva");
+      selectButton.type = "button";
+      selectButton.addEventListener("click", async () => {
+        if (!confirm(`Attivare ${name} versione ${release.version}?`)) return;
+        await runAction(selectButton, `Attivazione di ${name} ${release.version}…`, async () => {
+          await apiPost("/api/select", { app: slug, version: release.version });
+        });
+        showVersions(card, slug, name);
+      });
+
+      const remove = element("button", "action-button action-danger", "Elimina");
+      remove.type = "button";
+      remove.addEventListener("click", async () => {
+        if (!confirm(`Eliminare ${name} versione ${release.version}?`)) return;
+        await runAction(remove, `Eliminazione di ${name} ${release.version}…`, async () => {
+          await apiPost("/api/delete", { app: slug, version: release.version });
+        });
+        showVersions(card, slug, name);
+      });
+      controls.append(selectButton, remove);
+    }
+    if (controls.childElementCount) row.append(controls);
+    body.append(row);
+  }
+
+  backdrop.hidden = false;
+  document.body.classList.add("modal-open");
+  document.querySelector("#version-modal-close").focus();
+}
+
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    category = button.dataset.category;
+    document.querySelectorAll(".filter").forEach(b =>
+      b.classList.toggle("active", b === button)
+    );
+    render();
+  });
+});
+
+search.addEventListener("input", render);
+
+const toolbar = document.querySelector(".toolbar");
+const refresh = element("button", "manage", "Verifica aggiornamenti");
+refresh.type = "button";
+refresh.addEventListener("click", refreshData);
+refresh.setAttribute("aria-label", "Verifica aggiornamenti");
+toolbar.append(refresh);
+
+document.addEventListener("click", () => {
+  document.querySelectorAll(".app-menu").forEach(m => m.hidden = true);
+  document.querySelectorAll(".menu-trigger").forEach(b => b.setAttribute("aria-expanded", "false"));
+});
+
+render();
+requestAnimationFrame(() => requestAnimationFrame(refreshData));
+
+const versionBackdrop = document.querySelector("#version-modal-backdrop");
+function closeVersionModal() {
+  versionBackdrop.hidden = true;
+  document.body.classList.remove("modal-open");
+}
+document.querySelector("#version-modal-close").addEventListener("click", closeVersionModal);
+versionBackdrop.addEventListener("click", event => {
+  if (event.target === versionBackdrop) closeVersionModal();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !versionBackdrop.hidden) closeVersionModal();
+});
+
+</script>
+</body>
+</html>

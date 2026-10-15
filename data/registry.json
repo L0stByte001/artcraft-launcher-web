@@ -1,0 +1,52 @@
+{
+  "apps": {
+    "photocraft": {
+      "installed": [],
+      "selected": null
+    },
+    "vectorcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "filmcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "lightcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "pdfcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "effectcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "designcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "wordcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "deckcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "gridcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "cadcraft": {
+      "installed": [],
+      "selected": null
+    },
+    "soundcraft": {
+      "installed": [],
+      "selected": null
+    }
+  }
+}
