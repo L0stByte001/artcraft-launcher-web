@@ -222,25 +222,22 @@ body.modal-open { overflow: hidden; }
 <main>
   <div class="toolbar">
     <div class="filters" id="filters">
-      <button class="filter active" data-category="Tutte">Tutte</button>
-      <button class="filter" data-category="Creatività">Creatività</button>
-      <button class="filter" data-category="Produttività">Produttività</button>
-      <button class="filter" data-category="Tecnica">Tecnica</button>
-      <button class="filter" data-category="Audio e video">Audio e video</button>
+      <button class="filter active" data-category="All">All</button>
+      <button class="filter" data-category="Creative">Creative</button>
+      <button class="filter" data-category="Productivity">Productivity</button>
+      <button class="filter" data-category="Technical">Technical</button>
+      <button class="filter" data-category="Audio & Video">Audio & Video</button>
     </div>
-    <input id="search" type="search" placeholder="Cerca applicazioni…"
-           aria-label="Cerca applicazioni">
+    <input id="search" type="search" placeholder="Search applications…"
+           aria-label="Search applications">
   </div>
 
-  <h2 id="count">12 APPLICAZIONI</h2>
-  <p id="sync-status" class="sync-status" role="status" aria-live="polite">Applicazioni disponibili</p>
+  <h2 id="count">12 APPLICATIONS</h2>
+  <p id="sync-status" class="sync-status" role="status" aria-live="polite">Applications available</p>
   <section class="grid" id="grid"></section>
 
   <footer>
-    ArtCraft Hub è un launcher web indipendente. Le applicazioni sono
-    distribuite dai rispettivi progetti Storytold. I marchi appartengono
-    ai rispettivi proprietari. Le funzioni disponibili dipendono dalla
-    versione web di ogni applicazione.
+    ArtCraft Hub is an independent web launcher. Applications are distributed by their respective Storytold projects. All trademarks belong to their respective owners. Available features depend on the web version of each application.
   </footer>
 </main>
 
@@ -250,37 +247,37 @@ body.modal-open { overflow: hidden; }
     <div class="modal-header">
       <img id="version-modal-icon" class="app-icon" width="46" height="46" alt="">
       <div class="modal-heading">
-        <h3 id="version-modal-title">Gestisci versioni</h3>
-        <p id="version-modal-subtitle">Versioni disponibili</p>
+        <h3 id="version-modal-title">Manage versions</h3>
+        <p id="version-modal-subtitle">Available versions</p>
       </div>
       <button id="version-modal-close" class="modal-close"
-              type="button" aria-label="Chiudi">×</button>
+              type="button" aria-label="Close">×</button>
     </div>
     <div id="version-modal-body" class="modal-body"></div>
     <div class="modal-footer">
-      Le operazioni di installazione, selezione ed eliminazione modificano i file
-      sul server. Le operazioni distruttive richiedono conferma.
+      Installation, selection, and deletion operations modify files
+      on the server. Destructive operations require confirmation.
     </div>
   </section>
 </div>
 
 <script>
 const apps = [
-  ["photocraft","PhotoCraft","Creatività","Editor di immagini","0.8.2"],
-  ["vectorcraft","VectorCraft","Creatività","Grafica vettoriale","0.10.0"],
-  ["filmcraft","FilmCraft","Audio e video","Montaggio video e colore","0.7.2"],
-  ["lightcraft","LightCraft","Creatività","Sviluppo fotografico RAW","0.7.1"],
-  ["pdfcraft","PdfCraft","Produttività","Lettura e gestione PDF","0.7.1"],
-  ["effectcraft","EffectCraft","Audio e video","Effetti e motion graphics","0.9.2"],
-  ["designcraft","DesignCraft","Creatività","Impaginazione e publishing","0.7.1"],
-  ["wordcraft","WordCraft","Produttività","Documenti e scrittura","0.6.1"],
-  ["deckcraft","DeckCraft","Produttività","Presentazioni","0.6.1"],
-  ["gridcraft","GridCraft","Produttività","Fogli di calcolo e dati","0.6.1"],
-  ["cadcraft","CADCraft","Tecnica","Disegno e progettazione CAD","0.6.2"],
-  ["soundcraft","SoundCraft","Audio e video","Registrazione e mix audio","0.6.1"]
+  ["photocraft","PhotoCraft","Creative","Image editor","0.8.2"],
+  ["vectorcraft","VectorCraft","Creative","Vector graphics","0.10.0"],
+  ["filmcraft","FilmCraft","Audio & Video","Video editing and color grading","0.7.2"],
+  ["lightcraft","LightCraft","Creative","RAW photo development","0.7.1"],
+  ["pdfcraft","PdfCraft","Productivity","PDF reading and management","0.7.1"],
+  ["effectcraft","EffectCraft","Audio & Video","Visual effects and motion graphics","0.9.2"],
+  ["designcraft","DesignCraft","Creative","Page layout and publishing","0.7.1"],
+  ["wordcraft","WordCraft","Productivity","Documents and writing","0.6.1"],
+  ["deckcraft","DeckCraft","Productivity","Presentations","0.6.1"],
+  ["gridcraft","GridCraft","Productivity","Spreadsheets and data","0.6.1"],
+  ["cadcraft","CADCraft","Technical","CAD drafting and design","0.6.2"],
+  ["soundcraft","SoundCraft","Audio & Video","Audio recording and mixing","0.6.1"]
 ];
 
-let category = "Tutte";
+let category = "All";
 let installedData = {};
 let releaseData = {};
 let loading = false;
@@ -307,7 +304,7 @@ async function api(path) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.error || `Richiesta fallita: HTTP ${response.status}`);
+    throw new Error(data.error || `Request failed: HTTP ${response.status}`);
   }
   return data;
 }
@@ -325,7 +322,7 @@ async function apiPost(path, payload) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.error || `Richiesta fallita: HTTP ${response.status}`);
+    throw new Error(data.error || `Request failed: HTTP ${response.status}`);
   }
   return data;
 }
@@ -334,15 +331,15 @@ async function runAction(button, message, action) {
   const status = document.querySelector("#sync-status");
   const original = button.textContent;
   button.disabled = true;
-  button.textContent = "Attendere…";
+  button.textContent = "Please wait…";
   status.textContent = message;
   try {
     await action();
-    status.textContent = "Operazione completata.";
+    status.textContent = "Operation completed.";
     await refreshData();
   } catch (error) {
-    status.textContent = `Operazione non riuscita: ${error.message}`;
-    alert(`Operazione non riuscita: ${error.message}`);
+    status.textContent = `Operation failed: ${error.message}`;
+    alert(`Operation failed: ${error.message}`);
   } finally {
     button.disabled = false;
     button.textContent = original;
@@ -353,15 +350,28 @@ async function refreshData() {
   if (loading) return;
   loading = true;
   const status = document.querySelector("#sync-status");
-  status.textContent = "Verifica aggiornamenti in background…";
+  status.textContent = "Checking updates in the background…";
 
   try {
     const data = await api("/api/apps");
     installedData = data.apps || {};
     render();
 
+    const installedApps = apps.filter(([slug]) => {
+      const state = installedData[slug] || {};
+      return Array.isArray(state.installed) && state.installed.length > 0;
+    });
+
+    // Clear stale release data for apps with no installed versions.
+    for (const [slug] of apps) {
+      const state = installedData[slug] || {};
+      if (!Array.isArray(state.installed) || state.installed.length === 0) {
+        delete releaseData[slug];
+      }
+    }
+
     const results = await Promise.allSettled(
-      apps.map(async app => {
+      installedApps.map(async app => {
         const data = await api(
           `/api/releases?app=${encodeURIComponent(app[0])}`
         );
@@ -372,10 +382,10 @@ async function refreshData() {
 
     const failed = results.filter(r => r.status === "rejected").length;
     status.textContent = failed
-      ? `Catalogo aggiornato parzialmente · ${failed} verifiche non riuscite`
-      : `Catalogo verificato · ${new Date().toLocaleTimeString("it-IT", {hour: "2-digit", minute: "2-digit"})}`;
+      ? `Catalog partially refreshed · ${failed} checks failed`
+      : `Catalog checked · ${new Date().toLocaleTimeString("en-GB", {hour: "2-digit", minute: "2-digit"})}`;
   } catch (error) {
-    status.textContent = `Verifica non riuscita: ${error.message}. Le applicazioni restano disponibili.`;
+    status.textContent = `Check failed: ${error.message}. Applications remain available.`;
   } finally {
     loading = false;
   }
@@ -391,15 +401,15 @@ function element(tag, className, text) {
 function render() {
   const query = search.value.trim().toLowerCase();
   const filtered = apps.filter(a =>
-    (category === "Tutte" || a[2] === category) &&
+    (category === "All" || a[2] === category) &&
     a.slice(0, 4).join(" ").toLowerCase().includes(query)
   );
 
-  count.textContent = `${filtered.length} APPLICAZIONI`;
+  count.textContent = `${filtered.length} APPLICATIONS`;
   grid.replaceChildren();
 
   if (!filtered.length) {
-    grid.append(element("p", "empty", "Nessuna applicazione trovata."));
+    grid.append(element("p", "empty", "No applications found."));
     return;
   }
 
@@ -431,19 +441,23 @@ function render() {
     card.append(element("p", "description", desc));
 
     const versionLabel = selected
-      ? `Selezionata: ${selected}`
-      : "Nessuna versione registrata";
+      ? `Selected: ${selected}`
+      : "Not installed";
     card.append(element("div", "version", versionLabel));
 
-    if (latest && !installed.includes(latest.version)) {
-      card.append(element(
-        "div", "update-note",
-        `Nuova versione disponibile: ${latest.version}`
-      ));
-    } else if (!releases.length) {
-      card.append(element("div", "version", "Versioni online non verificate"));
-    } else {
-      card.append(element("div", "status-ok", "Catalogo verificato"));
+    if (installed.length > 0) {
+      if (latest && selected &&
+          versionCompare(latest.version, selected) > 0 &&
+          !installed.includes(latest.version)) {
+        card.append(element(
+          "div", "update-note",
+          `Update available: ${latest.version}`
+        ));
+      } else if (!releases.length) {
+        card.append(element("div", "version", "Online versions not checked"));
+      } else {
+        card.append(element("div", "status-ok", "Catalog checked"));
+      }
     }
 
     const actions = element("div", "actions");
@@ -451,22 +465,22 @@ function render() {
     // La card apre sempre la versione attualmente selezionata.
     // Gli aggiornamenti si gestiscono esclusivamente dal menu versioni.
     if (selected) {
-      const appLink = element("a", "open", "Apri");
+      const appLink = element("a", "open", "Open");
       appLink.href = `/apps/${slug}/current/`;
       appLink.target = "_blank";
       appLink.rel = "noopener noreferrer";
       appLink.setAttribute(
         "aria-label",
-        `Apri ${name} versione ${selected} in una nuova scheda`
+        `Open ${name} version ${selected} in a new tab`
       );
       actions.append(appLink);
     } else {
-      const downloadButton = element("button", "open", "Scarica");
+      const downloadButton = element("button", "open", "Download");
       downloadButton.type = "button";
 
       downloadButton.addEventListener("click", async () => {
         if (!confirm(
-          `Scaricare ${name} (${latest?.version || "ultima versione disponibile"})?`
+          `Download ${name} (${latest?.version || "latest available version"})?`
         )) return;
 
         downloadButton.disabled = true;
@@ -487,7 +501,7 @@ function render() {
         } catch (error) {
           alert(`Download non riuscito: ${error.message}`);
           downloadButton.disabled = false;
-          downloadButton.textContent = "Scarica";
+          downloadButton.textContent = "Download";
         }
       });
 
@@ -496,13 +510,13 @@ function render() {
     const menuWrap = element("div", "menu-wrap");
     const trigger = element("button", "menu-trigger", "⋮");
     trigger.type = "button";
-    trigger.setAttribute("aria-label", `Altre azioni per ${name}`);
+    trigger.setAttribute("aria-label", `More actions for ${name}`);
     trigger.setAttribute("aria-expanded", "false");
 
     const menu = element("div", "app-menu");
     menu.hidden = true;
 
-    const manage = element("button", "", "Gestisci versioni");
+    const manage = element("button", "", "Manage versions");
     manage.type = "button";
     manage.addEventListener("click", () => {
       menu.hidden = true;
@@ -521,7 +535,7 @@ function render() {
       !installedVersions.includes(latestRelease.version)
     );
 
-    const updateLatest = element("button", "", "Aggiorna all'ultima versione");
+    const updateLatest = element("button", "", "Update to latest version");
     updateLatest.type = "button";
     updateLatest.addEventListener("click", async () => {
       menu.hidden = true;
@@ -529,21 +543,21 @@ function render() {
 
       const latestRelease = (releaseData[slug] || [])[0];
       if (!latestRelease) {
-        alert(`Nessuna release disponibile per ${name}.`);
+        alert(`No releases available for ${name}.`);
         return;
       }
 
       const installedVersions = (installedData[slug] || {}).installed || [];
       const alreadyInstalled = installedVersions.includes(latestRelease.version);
 
-      const operation = alreadyInstalled ? "attivare" : "scaricare e attivare";
+      const operation = alreadyInstalled ? "activate" : "download and activate";
       if (!confirm(
         `Vuoi ${operation} ${name} ${latestRelease.version}?`
       )) return;
 
       await runAction(
         updateLatest,
-        `${alreadyInstalled ? "Attivazione" : "Aggiornamento"} di ${name} in corso…`,
+        `${alreadyInstalled ? "Activating" : "Updating"} ${name}…`,
         async () => {
           if (!alreadyInstalled) {
             await apiPost("/api/install", {
@@ -560,18 +574,18 @@ function render() {
       );
     });
 
-    const uninstall = element("button", "action-danger", "Disinstalla app");
+    const uninstall = element("button", "action-danger", "Uninstall app");
     uninstall.type = "button";
     uninstall.addEventListener("click", async () => {
       menu.hidden = true;
       trigger.setAttribute("aria-expanded", "false");
-      if (!confirm(`Disinstallare ${name} e rimuovere tutte le sue versioni dal server? La scheda resterà nel launcher.`)) return;
-      await runAction(uninstall, `Disinstallazione di ${name} in corso…`, async () => {
+      if (!confirm(`Uninstall ${name} and remove all its versions from the server? Its card will remain in the launcher.`)) return;
+      await runAction(uninstall, `Uninstalling ${name}…`, async () => {
         await apiPost("/api/uninstall", { app: slug });
       });
     });
 
-    const source = element("a", "", "Repository GitHub");
+    const source = element("a", "", "GitHub releases");
     source.href = `https://github.com/storytold/${slug}/releases`;
     source.target = "_blank";
     source.rel = "noopener noreferrer";
@@ -595,17 +609,33 @@ function render() {
   }
 }
 
-function showVersions(card, slug, name) {
+async function showVersions(card, slug, name) {
   const backdrop = document.querySelector("#version-modal-backdrop");
   const body = document.querySelector("#version-modal-body");
   const state = installedData[slug] || {};
   const installed = state.installed || [];
   const selected = state.selected;
-  const releases = releaseData[slug] || [];
+  let releases = releaseData[slug] || [];
+
+  // Release discovery for never-installed apps is on demand, not automatic.
+  if (!releases.length) {
+    body.replaceChildren(element("p", "empty", "Loading releases…"));
+    backdrop.hidden = false;
+    try {
+      const data = await api(`/api/releases?app=${encodeURIComponent(slug)}`);
+      releaseData[slug] = data.releases || [];
+      releases = releaseData[slug];
+    } catch (error) {
+      body.replaceChildren(element("p", "empty", `Unable to load releases: ${error.message}`));
+      document.querySelector("#version-modal-title").textContent = name;
+      document.querySelector("#version-modal-subtitle").textContent = "Release information unavailable";
+      return;
+    }
+  }
 
   document.querySelector("#version-modal-title").textContent = name;
   document.querySelector("#version-modal-subtitle").textContent =
-    `${installed.length} versioni installate · ${releases.length} release online`;
+    `${installed.length} installed versions · ${releases.length} online releases`;
   const icon = document.querySelector("#version-modal-icon");
   icon.src = `/icons/${slug}.png`;
   icon.alt = `${name} icon`;
@@ -614,7 +644,7 @@ function showVersions(card, slug, name) {
 
   if (!releases.length) {
     body.append(element("p", "empty",
-      "Release non disponibili. Il controllo online potrebbe essere fallito."));
+      "Releases unavailable. The online check may have failed."));
   }
 
   for (const release of releases) {
@@ -623,52 +653,52 @@ function showVersions(card, slug, name) {
     details.append(element("strong", "", `v${release.version}`));
 
     const labels = [];
-    if (release.version === selected) labels.push("selezionata");
+    if (release.version === selected) labels.push("selected");
     if (installed.includes(release.version) && release.installed) {
-      labels.push("presente sul server");
+      labels.push("present on server");
     } else {
-      labels.push("non installata");
+      labels.push("not installed");
     }
     details.append(element("div", "category", labels.join(" · ")));
     row.append(details);
 
     const isInstalled = installed.includes(release.version) && release.installed;
     if (release.version === selected) {
-      row.append(element("span", "tag-selected", "In uso"));
+      row.append(element("span", "tag-selected", "In use"));
     } else if (isInstalled) {
-      row.append(element("span", "tag-installed", "Installata"));
+      row.append(element("span", "tag-installed", "Installed"));
     } else {
-      row.append(element("span", "tag-missing", "Su GitHub"));
+      row.append(element("span", "tag-missing", "On GitHub"));
     }
 
     const controls = element("div", "actions");
     if (!isInstalled) {
-      const install = element("button", "action-button", "Installa");
+      const install = element("button", "action-button", "Install");
       install.type = "button";
       install.addEventListener("click", async () => {
-        if (!confirm(`Scaricare ${name} versione ${release.version}?`)) return;
-        await runAction(install, `Installazione di ${name} ${release.version}…`, async () => {
+        if (!confirm(`Download ${name} version ${release.version}?`)) return;
+        await runAction(install, `Installing ${name} ${release.version}…`, async () => {
           await apiPost("/api/install", { app: slug, version: release.version });
         });
         showVersions(card, slug, name);
       });
       controls.append(install);
     } else if (release.version !== selected) {
-      const selectButton = element("button", "action-button", "Attiva");
+      const selectButton = element("button", "action-button", "Activate");
       selectButton.type = "button";
       selectButton.addEventListener("click", async () => {
-        if (!confirm(`Attivare ${name} versione ${release.version}?`)) return;
-        await runAction(selectButton, `Attivazione di ${name} ${release.version}…`, async () => {
+        if (!confirm(`Activate ${name} version ${release.version}?`)) return;
+        await runAction(selectButton, `Activating ${name} ${release.version}…`, async () => {
           await apiPost("/api/select", { app: slug, version: release.version });
         });
         showVersions(card, slug, name);
       });
 
-      const remove = element("button", "action-button action-danger", "Elimina");
+      const remove = element("button", "action-button action-danger", "Delete");
       remove.type = "button";
       remove.addEventListener("click", async () => {
-        if (!confirm(`Eliminare ${name} versione ${release.version}?`)) return;
-        await runAction(remove, `Eliminazione di ${name} ${release.version}…`, async () => {
+        if (!confirm(`Delete ${name} version ${release.version}?`)) return;
+        await runAction(remove, `Deleting ${name} ${release.version}…`, async () => {
           await apiPost("/api/delete", { app: slug, version: release.version });
         });
         showVersions(card, slug, name);
@@ -697,10 +727,10 @@ document.querySelectorAll(".filter").forEach(button => {
 search.addEventListener("input", render);
 
 const toolbar = document.querySelector(".toolbar");
-const refresh = element("button", "manage", "Verifica aggiornamenti");
+const refresh = element("button", "manage", "Check updates");
 refresh.type = "button";
 refresh.addEventListener("click", refreshData);
-refresh.setAttribute("aria-label", "Verifica aggiornamenti");
+refresh.setAttribute("aria-label", "Check updates");
 toolbar.append(refresh);
 
 document.addEventListener("click", () => {

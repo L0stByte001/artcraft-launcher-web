@@ -40,12 +40,12 @@ def version_key(v):
 
 def app_root(slug):
     if slug not in APPS:
-        raise ValueError("Applicazione non consentita")
+        raise ValueError("Application not allowed")
     return APPS_DIR / slug
 
 def version_dir(slug, version):
     if slug not in APPS or not re.fullmatch(r"\d+\.\d+\.\d+", version):
-        raise ValueError("Applicazione o versione non valida")
+        raise ValueError("Invalid application or version")
     return app_root(slug) / "versions" / version
 
 def load_registry():
@@ -54,7 +54,7 @@ def load_registry():
     with REGISTRY.open() as f:
         data = json.load(f)
     if not isinstance(data, dict) or not isinstance(data.get("apps"), dict):
-        raise ValueError("Registro non valido")
+        raise ValueError("Invalid registry")
     return data
 
 def save_registry(data):
@@ -102,7 +102,7 @@ def github_releases(slug):
 def cached_github_releases(slug):
     """Restituisce le release dalla cache; usa GitHub solo se necessario."""
     if slug not in APPS:
-        raise ValueError("Applicazione non consentita")
+        raise ValueError("Application not allowed")
 
     cache_file = DATA / "release-cache" / f"{slug}.json"
     cached = None
@@ -137,30 +137,30 @@ def inspect_zip(zf, destination):
     # Blocca path traversal, symlink e archivi eccessivamente grandi.
     infos = zf.infolist()
     if len(infos) > 20000:
-        raise ValueError("Archivio con troppi file")
+        raise ValueError("Archive contains too many files")
     total = 0
     for info in infos:
         name = info.filename.replace("\\", "/")
         path = Path(name)
         mode = (info.external_attr >> 16) & 0o170000
         if path.is_absolute() or ".." in path.parts or mode == 0o120000:
-            raise ValueError("Percorso non sicuro nell'archivio")
+            raise ValueError("Unsafe path in archive")
         total += info.file_size
         if total > 4 * 1024**3:
-            raise ValueError("Archivio decompresso troppo grande")
+            raise ValueError("Extracted archive is too large")
     zf.extractall(destination)
 
 def install_version(slug, version):
     if slug not in APPS:
-        raise ValueError("Applicazione non consentita")
+        raise ValueError("Application not allowed")
     releases, _source = cached_github_releases(slug)
     release = next((r for r in releases if r["version"] == version), None)
     if release is None:
-        raise ValueError("Release web non trovata su GitHub")
+        raise ValueError("Web release not found on GitHub")
 
     target = version_dir(slug, version)
     if target.exists():
-        raise ValueError("Versione già installata")
+        raise ValueError("Version already installed")
 
     target.parent.mkdir(parents=True, exist_ok=True)
     temp_parent = target.parent
@@ -178,14 +178,14 @@ def install_version(slug, version):
 
         with zipfile.ZipFile(archive) as zf:
             if zf.testzip() is not None:
-                raise ValueError("Archivio ZIP danneggiato")
+                raise ValueError("Corrupted ZIP archive")
             inspect_zip(zf, extracted)
 
         # Cerca la directory che contiene index.html.
         candidates = [p.parent for p in extracted.rglob("index.html")
                       if p.is_file()]
         if not candidates:
-            raise ValueError("Nell'archivio non è presente index.html")
+            raise ValueError("Archive does not contain index.html")
         source = min(candidates, key=lambda p: len(p.parts))
 
         # Pubblica solo dopo download, verifica ed estrazione completati.
@@ -269,12 +269,12 @@ class Handler(BaseHTTPRequestHandler):
         try:
             length = int(self.headers.get("Content-Length", "0"))
         except ValueError:
-            raise ValueError("Content-Length non valido")
+            raise ValueError("Invalid Content-Length")
         if length <= 0 or length > 16384:
-            raise ValueError("Dimensione richiesta non valida")
+            raise ValueError("Invalid request size")
         data = json.loads(self.rfile.read(length))
         if not isinstance(data, dict):
-            raise ValueError("JSON deve essere un oggetto")
+            raise ValueError("JSON body must be an object")
         return data
 
     def do_GET(self):
@@ -302,7 +302,7 @@ class Handler(BaseHTTPRequestHandler):
                 if parsed.path == "/api/releases":
                     slug = query.get("app", [""])[0]
                     if slug not in APPS:
-                        raise ValueError("Applicazione non consentita")
+                        raise ValueError("Application not allowed")
                     releases, source = cached_github_releases(slug)
                     installed = data["apps"].get(slug, {}).get("installed", [])
                     for release in releases:
@@ -316,7 +316,7 @@ class Handler(BaseHTTPRequestHandler):
                         "source": source,
                         "stale": source == "cache-stale"
                     })
-            return self.send_json(404, {"error": "Endpoint inesistente"})
+            return self.send_json(404, {"error": "Endpoint not found"})
         except Exception as exc:
             return self.send_json(400, {"error": str(exc)})
 
@@ -324,7 +324,7 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path not in ("/api/install", "/api/select",
                                "/api/delete", "/api/uninstall"):
-            return self.send_json(404, {"error": "Endpoint inesistente"})
+            return self.send_json(404, {"error": "Endpoint not found"})
 
         try:
             payload = self.read_json()
@@ -332,7 +332,7 @@ class Handler(BaseHTTPRequestHandler):
             version = payload.get("version")
 
             if slug not in APPS:
-                raise ValueError("Applicazione non consentita")
+                raise ValueError("Application not allowed")
 
             with LOCK:
                 data = load_registry()
@@ -358,17 +358,17 @@ class Handler(BaseHTTPRequestHandler):
                     if version == "latest":
                         releases, _source = cached_github_releases(slug)
                         if not releases:
-                            raise ValueError("Nessuna release web disponibile")
+                            raise ValueError("No web releases available")
                         version = releases[0]["version"]
 
                     if not isinstance(version, str):
-                        raise ValueError("Versione non valida")
+                        raise ValueError("Invalid version")
 
                     result = install_version(slug, version)
                     return self.send_json(200, result)
 
                 if not isinstance(version, str):
-                    raise ValueError("Versione non valida")
+                    raise ValueError("Invalid version")
 
                 target = version_dir(slug, version)
 
@@ -376,7 +376,7 @@ class Handler(BaseHTTPRequestHandler):
                     if version not in entry["installed"] or not (
                         target / "index.html"
                     ).is_file():
-                        raise ValueError("Versione non installata")
+                        raise ValueError("Version is not installed")
 
                     root = app_root(slug)
                     current = root / "current"
@@ -399,7 +399,7 @@ class Handler(BaseHTTPRequestHandler):
                         )
 
                     if version not in entry["installed"] or not target.is_dir():
-                        raise ValueError("Versione non installata")
+                        raise ValueError("Version is not installed")
 
                     shutil.rmtree(target)
                     entry["installed"].remove(version)
@@ -408,7 +408,7 @@ class Handler(BaseHTTPRequestHandler):
                         "app": slug, "deleted": version
                     })
 
-            return self.send_json(404, {"error": "Endpoint inesistente"})
+            return self.send_json(404, {"error": "Endpoint not found"})
 
         except Exception as exc:
             return self.send_json(400, {"error": str(exc)})
