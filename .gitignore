@@ -35,3 +35,4 @@ data/release-cache/*
 !data/release-cache/.gitkeep
 
 # Stato runtime: mantenere solo il registry iniziale versionato
+/data/registry.json
