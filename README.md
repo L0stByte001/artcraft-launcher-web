@@ -1,21 +1,24 @@
 # ArtCraft Standalone
 
-A self-hosted launcher for managing ArtCraft applications from a single web interface.
+An independent, self-hosted web launcher for managing ArtCraft web applications from a single interface.
+
+<img width="1366" height="622" alt="ArtCraft Standalone launcher interface" src="https://github.com/user-attachments/assets/3dae0d68-b28b-48f9-8241-368cb9d7d801" />
 
 ## Features
 
-- A launcher with 12 application entries.
-- Application installation and removal through the management interface.
-- Release discovery and version selection.
-- Docker Compose deployment.
-- Persistent application registry.
+- **Centralized application catalog** — browse 12 application entries from a single web interface.
+- **Search and category filters** — find applications by name, description, or category.
+- **On-demand installation** — download application releases when you choose to install them.
+- **Version management** — inspect available releases and manage installed versions.
+- **Application updates** — check for newer releases of installed applications and update when desired.
+- **Web-based access** — manage applications through a browser without requiring a separate desktop launcher.
+- **Containerized deployment** — run the web interface and application management service with Docker Compose.
 
 ## Requirements
 
-- Linux
+- Linux host
 - Docker Engine
 - Docker Compose v2
-- Network access to GitHub Releases to download applications
 
 ## Quick start
 
@@ -32,22 +35,35 @@ Start the services:
 docker compose up -d
 ```
 
-Open `http://localhost:8080` in your browser.
+Open the launcher in your browser:
 
-If deploying on a remote server, replace `localhost` with the server address, provided the service is reachable from your client.
+```text
+http://localhost:8080
+```
 
-## Application data
+## Architecture
 
-- `data/registry.json` stores the application installation registry.
-- `data/release-cache/` stores regenerable release metadata.
-- `www/apps/` contains downloaded application payloads.
+ArtCraft Standalone consists of two services:
+
+- **Web frontend** — serves the launcher interface and proxies API requests.
+- **Updater service** — handles application management, release discovery, downloads, and version selection.
+
+Both services are orchestrated using Docker Compose.
 
 ## Security
 
-**Do not expose the management interface to the public internet without appropriate access controls.**
+**Do not expose the management API or launcher directly to the public internet without appropriate access controls.**
 
-Application installation and removal are management operations. Restrict access to trusted users and networks, such as a private LAN or VPN, and review the API access controls before deploying this service on an untrusted network.
+Review the API access controls and deployment configuration before using this project on an untrusted network.
 
 ## License
 
-See the license and attribution notices included in the repository. Review the licenses of bundled components and downloaded applications separately.
+ArtCraft Standalone is licensed under the **GNU General Public License v3.0 only (GPL-3.0-only)**.
+
+You may use, study, modify, and redistribute this software, including for commercial purposes, subject to the terms of the GPL-3.0.
+
+Modified versions distributed to others must comply with the license's applicable source-code and redistribution requirements.
+
+See [`LICENSE`](LICENSE) for the full license text.
+
+This license applies only to the original code in this repository. Third-party applications, trademarks, logos, and other assets remain subject to their respective licenses and terms.
