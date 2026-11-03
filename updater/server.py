@@ -21,18 +21,22 @@ LOCK = threading.RLock()
 
 # Slug e repository sono definiti dal server, mai forniti come percorso.
 APPS = {
-    "photocraft":  {"repo": "photocraft",  "version": "0.8.2"},
-    "vectorcraft": {"repo": "vectorcraft", "version": "0.10.0"},
-    "filmcraft":   {"repo": "filmcraft",   "version": "0.7.2"},
-    "lightcraft":  {"repo": "lightcraft",  "version": "0.7.1"},
-    "pdfcraft":    {"repo": "pdfcraft",    "version": "0.7.1"},
-    "effectcraft": {"repo": "effectcraft", "version": "0.9.2"},
-    "designcraft": {"repo": "designcraft", "version": "0.7.1"},
-    "wordcraft":   {"repo": "wordcraft",   "version": "0.6.1"},
-    "deckcraft":   {"repo": "deckcraft",   "version": "0.6.1"},
-    "gridcraft":   {"repo": "gridcraft",   "version": "0.6.1"},
-    "cadcraft":    {"repo": "cadcraft",    "version": "0.6.2"},
-    "soundcraft":  {"repo": "soundcraft",  "version": "0.6.1"},
+    "photocraft":     {"repo": "photocraft",     "version": "0.8.2"},
+    "vectorcraft":    {"repo": "vectorcraft",    "version": "0.10.0"},
+    "filmcraft":      {"repo": "filmcraft",      "version": "0.7.2"},
+    "lightcraft":     {"repo": "lightcraft",     "version": "0.7.1"},
+    "pdfcraft":       {"repo": "pdfcraft",       "version": "0.7.1"},
+    "effectcraft":    {"repo": "effectcraft",    "version": "0.9.2"},
+    "designcraft":    {"repo": "designcraft",    "version": "0.7.1"},
+    "figcraft":       {"repo": "figcraft",       "version": "0.15.0"},
+    "texturecraft":   {"repo": "texturecraft",   "version": "0.3.0"},
+    "materialcraft":  {"repo": "materialcraft",  "version": "0.1.0"},
+    "wordcraft":      {"repo": "wordcraft",      "version": "0.6.1"},
+    "soundcraft":     {"repo": "soundcraft",     "version": "0.6.1"},
+    "deckcraft":      {"repo": "deckcraft",      "version": "0.6.1"},
+    "cadcraft":       {"repo": "cadcraft",       "version": "0.6.2"},
+    "gridcraft":      {"repo": "gridcraft",      "version": "0.6.1"},
+    "craft-anything": {"repo": "craft-anything", "version": "0.3.0"},
 }
 
 def version_key(v):
@@ -343,7 +347,8 @@ class Handler(BaseHTTPRequestHandler):
                 if parsed.path == "/api/uninstall":
                     # Rimuove l'intera app, incluse le versioni e i file legacy.
                     root = app_root(slug)
-                    shutil.rmtree(root, ignore_errors=False)
+                    if root.exists():
+                        shutil.rmtree(root)
                     root.mkdir(parents=True, exist_ok=True)
                     data["apps"][slug] = {
                         "installed": [],

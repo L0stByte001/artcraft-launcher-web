@@ -1,0 +1,189 @@
+{
+  "fetched_at": 1793705838.537715,
+  "releases": [
+    {
+      "version": "0.21.0",
+      "asset": "vectorcraft-web-0.21.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.21.0/vectorcraft-web-0.21.0.zip",
+      "size": 32946202,
+      "published_at": "2026-11-03T01:14:20Z",
+      "tag": "v0.21.0"
+    },
+    {
+      "version": "0.20.0",
+      "asset": "vectorcraft-web-0.20.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.20.0/vectorcraft-web-0.20.0.zip",
+      "size": 32438720,
+      "published_at": "2026-11-01T19:43:26Z",
+      "tag": "v0.20.0"
+    },
+    {
+      "version": "0.19.0",
+      "asset": "vectorcraft-web-0.19.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.19.0/vectorcraft-web-0.19.0.zip",
+      "size": 31751351,
+      "published_at": "2026-10-31T04:08:53Z",
+      "tag": "v0.19.0"
+    },
+    {
+      "version": "0.18.0",
+      "asset": "vectorcraft-web-0.18.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.18.0/vectorcraft-web-0.18.0.zip",
+      "size": 30314340,
+      "published_at": "2026-10-28T17:38:39Z",
+      "tag": "v0.18.0"
+    },
+    {
+      "version": "0.17.0",
+      "asset": "vectorcraft-web-0.17.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.17.0/vectorcraft-web-0.17.0.zip",
+      "size": 29276998,
+      "published_at": "2026-10-25T14:01:11Z",
+      "tag": "v0.17.0"
+    },
+    {
+      "version": "0.16.0",
+      "asset": "vectorcraft-web-0.16.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.16.0/vectorcraft-web-0.16.0.zip",
+      "size": 28447363,
+      "published_at": "2026-10-23T01:01:59Z",
+      "tag": "v0.16.0"
+    },
+    {
+      "version": "0.15.0",
+      "asset": "vectorcraft-web-0.15.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.15.0/vectorcraft-web-0.15.0.zip",
+      "size": 28337082,
+      "published_at": "2026-10-22T20:44:27Z",
+      "tag": "v0.15.0"
+    },
+    {
+      "version": "0.14.0",
+      "asset": "vectorcraft-web-0.14.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.14.0/vectorcraft-web-0.14.0.zip",
+      "size": 27734185,
+      "published_at": "2026-10-21T07:46:25Z",
+      "tag": "v0.14.0"
+    },
+    {
+      "version": "0.13.1",
+      "asset": "vectorcraft-web-0.13.1.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.13.1/vectorcraft-web-0.13.1.zip",
+      "size": 23456967,
+      "published_at": "2026-10-18T04:36:37Z",
+      "tag": "v0.13.1"
+    },
+    {
+      "version": "0.12.0",
+      "asset": "vectorcraft-web-0.12.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.12.0/vectorcraft-web-0.12.0.zip",
+      "size": 22585168,
+      "published_at": "2026-10-16T12:26:40Z",
+      "tag": "v0.12.0"
+    },
+    {
+      "version": "0.11.0",
+      "asset": "vectorcraft-web-0.11.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.11.0/vectorcraft-web-0.11.0.zip",
+      "size": 24687078,
+      "published_at": "2026-10-14T14:54:46Z",
+      "tag": "v0.11.0"
+    },
+    {
+      "version": "0.10.0",
+      "asset": "vectorcraft-web-0.10.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.10.0/vectorcraft-web-0.10.0.zip",
+      "size": 23642640,
+      "published_at": "2026-10-12T15:56:13Z",
+      "tag": "v0.10.0"
+    },
+    {
+      "version": "0.9.0",
+      "asset": "vectorcraft-web-0.9.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.9.0/vectorcraft-web-0.9.0.zip",
+      "size": 21406580,
+      "published_at": "2026-10-11T00:56:53Z",
+      "tag": "v0.9.0"
+    },
+    {
+      "version": "0.8.0",
+      "asset": "vectorcraft-web-0.8.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.8.0/vectorcraft-web-0.8.0.zip",
+      "size": 20623297,
+      "published_at": "2026-10-10T02:51:48Z",
+      "tag": "v0.8.0"
+    },
+    {
+      "version": "0.7.0",
+      "asset": "vectorcraft-web-0.7.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.7.0/vectorcraft-web-0.7.0.zip",
+      "size": 19487517,
+      "published_at": "2026-10-08T18:43:46Z",
+      "tag": "v0.7.0"
+    },
+    {
+      "version": "0.6.0",
+      "asset": "vectorcraft-web-0.6.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.6.0/vectorcraft-web-0.6.0.zip",
+      "size": 19329959,
+      "published_at": "2026-10-08T14:41:38Z",
+      "tag": "v0.6.0"
+    },
+    {
+      "version": "0.5.0",
+      "asset": "vectorcraft-web-0.5.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.5.0/vectorcraft-web-0.5.0.zip",
+      "size": 19310208,
+      "published_at": "2026-10-08T13:03:59Z",
+      "tag": "v0.5.0"
+    },
+    {
+      "version": "0.4.0",
+      "asset": "vectorcraft-web-0.4.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.4.0/vectorcraft-web-0.4.0.zip",
+      "size": 18292615,
+      "published_at": "2026-10-07T10:00:42Z",
+      "tag": "v0.4.0"
+    },
+    {
+      "version": "0.3.1",
+      "asset": "vectorcraft-web-0.3.1.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.3.1/vectorcraft-web-0.3.1.zip",
+      "size": 19579212,
+      "published_at": "2026-10-06T12:37:09Z",
+      "tag": "v0.3.1"
+    },
+    {
+      "version": "0.3.0",
+      "asset": "vectorcraft-web-0.3.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.3.0/vectorcraft-web-0.3.0.zip",
+      "size": 14752243,
+      "published_at": "2026-10-06T01:34:54Z",
+      "tag": "v0.3.0"
+    },
+    {
+      "version": "0.2.0",
+      "asset": "vectorcraft-web-0.2.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.2.0/vectorcraft-web-0.2.0.zip",
+      "size": 13307864,
+      "published_at": "2026-10-05T07:04:13Z",
+      "tag": "v0.2.0"
+    },
+    {
+      "version": "0.1.1",
+      "asset": "vectorcraft-web-0.1.1.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.1.1/vectorcraft-web-0.1.1.zip",
+      "size": 10645409,
+      "published_at": "2026-10-03T14:24:17Z",
+      "tag": "v0.1.1"
+    },
+    {
+      "version": "0.1.0",
+      "asset": "vectorcraft-web-0.1.0.zip",
+      "url": "https://github.com/storytold/vectorcraft/releases/download/v0.1.0/vectorcraft-web-0.1.0.zip",
+      "size": 10644730,
+      "published_at": "2026-10-02T22:31:32Z",
+      "tag": "v0.1.0"
+    }
+  ]
+}
