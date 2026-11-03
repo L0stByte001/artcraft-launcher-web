@@ -2,7 +2,8 @@
 
 An independent, self-hosted web launcher for managing ArtCraft web applications from a single interface.
 
-<img width="1366" height="622" alt="ArtCraft Standalone launcher interface" src="https://github.com/user-attachments/assets/3dae0d68-b28b-48f9-8241-368cb9d7d801" />
+<img width="3835" height="1896" alt="image" src="https://github.com/user-attachments/assets/7e5d6564-7522-4af9-ab28-25fc0be152c0" />
+
 
 ## Features
 
